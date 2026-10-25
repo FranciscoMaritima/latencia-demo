@@ -5,7 +5,7 @@
 <style>html,body{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}#canvas{touch-action:none}</style>
 <script>["gesturestart","gesturechange","gestureend"].forEach(function(t){document.addEventListener(t,function(e){e.preventDefault()},{passive:false})});document.addEventListener("touchmove",function(e){e.preventDefault()},{passive:false});document.addEventListener("dblclick",function(e){e.preventDefault()},{passive:false});
 /* anti-caché: si el index.html servido es más nuevo que esta copia, recarga */
-(function(){var V="rootheart_v202610242038";try{fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/rootheart_v\d+/);if(m&&m[0]!==V&&location.search.indexOf(m[0])<0){location.replace(location.pathname+"?v="+m[0])}})}catch(e){}})();</script>
+(function(){var V="rootheart_v202610250900";try{fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/rootheart_v\d+/);if(m&&m[0]!==V&&location.search.indexOf(m[0])<0){location.replace(location.pathname+"?v="+m[0])}})}catch(e){}})();</script>
 
 <style>
 html,body{background:#b57a32 !important}
@@ -126,7 +126,7 @@ body {
 
 		<script src="rootheart_v202610242038.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"rootheart_v202610242038","experimentalVK":false,"fileSizes":{"rootheart_v202610242038.pck":55455696,"rootheart_v202610242038.wasm":35376909},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":["--script","/rootheart_boot_v202610250900.gd"],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"rootheart_v202610242038","experimentalVK":false,"fileSizes":{"rootheart_v202610242038.pck":55455696,"rootheart_v202610242038.wasm":35376909,"rootheart_patch_v202610250900.zip":176224,"rootheart_boot_v202610250900.gd":683},"focusCanvas":true,"gdextensionLibs":[]};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -207,7 +207,10 @@ const engine = new Engine(GODOT_CONFIG);
 		}
 	} else {
 		setStatusMode('progress');
-		engine.startGame({
+		Promise.all([
+			engine.preloadFile("rootheart_patch_v202610250900.zip", "/rootheart_patch_v202610250900.zip"),
+			engine.preloadFile("rootheart_boot_v202610250900.gd", "/rootheart_boot_v202610250900.gd")
+		]).then(() => engine.startGame({
 			'onProgress': function (current, total) {
 				if (current > 0 && total > 0) {
 					statusProgress.value = current;
@@ -217,7 +220,7 @@ const engine = new Engine(GODOT_CONFIG);
 					statusProgress.removeAttribute('max');
 				}
 			},
-		}).then(() => {
+		})).then(() => {
 			setStatusMode('hidden');
 		}, displayFailureNotice);
 	}
